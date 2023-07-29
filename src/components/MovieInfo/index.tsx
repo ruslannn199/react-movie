@@ -1,4 +1,3 @@
-import React from 'react';
 // Components
 import Thumb from '../Thumb';
 // Config
@@ -7,8 +6,10 @@ import { IMAGE_BASE_URL, POSTER_SIZE } from '../../config';
 import NoImage from '../../images/no_image.jpg';
 // Styles
 import { Wrapper, Content, Text } from './MovieInfo.styles';
+// Types
+import type { MovieState } from '../../types/types';
 
-const MovieInfo = ({ movie }) => (
+const MovieInfo: React.FC<Record<'movie', MovieState>> = ({ movie }) => (
   <Wrapper backdrop={movie.backdrop_path}>
     <Content>
       <Thumb

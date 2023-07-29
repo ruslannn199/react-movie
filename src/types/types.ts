@@ -67,6 +67,17 @@ export type SearchBarProps = {
 
 export type ThumbProps = {
   image: string;
-  movieId: number;
   clickable: boolean;
+  movieId?: number;
+}
+
+export type MovieState = Movie & {
+  actors: Cast[];
+  directors: Crew[];
+}
+
+export type ActorProps = {
+  name: string;
+  character: string;
+  imageUrl: string;
 }

@@ -1,9 +1,8 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 // Styles
 import { Wrapper, Content } from './BreadCrumb.styles';
 
-const BreadCrumb = ({ movieTitle }) => (
+const BreadCrumb: React.FC<Record<'movieTitle', string>> = ({ movieTitle }) => (
   <Wrapper>
     <Content>
       <Link to={'/'}>

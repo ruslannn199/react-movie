@@ -3,9 +3,11 @@ import { useState, useEffect, useCallback } from 'react';
 import API from '../API';
 // Helpers
 import { isPersistedState } from '../helpers';
+// Types
+import type { MovieState } from '../types/types';
 
-export const useMovieFetch = (movieId) => {
-  const [state, setState] = useState({});
+export const useMovieFetch = (movieId: string) => {
+  const [state, setState] = useState<MovieState>({} as MovieState);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   
