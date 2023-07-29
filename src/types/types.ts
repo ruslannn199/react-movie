@@ -81,3 +81,14 @@ export type ActorProps = {
   character: string;
   imageUrl: string;
 }
+
+export type sessionIdResponse = {
+  success: boolean;
+  session_id?: string;
+}
+
+export type successSession = {
+  session_id: string;
+  username: string;
+  value?: number;
+}

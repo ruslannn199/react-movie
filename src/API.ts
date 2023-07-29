@@ -8,7 +8,7 @@ import {
   SESSION_ID_URL
 } from './config';
 // Types
-import type { Credits, Movie, Movies } from './types/types';
+import type { Credits, Movie, Movies, sessionIdResponse } from './types/types';
 
 const defaultConfig = {
   method: 'POST',
@@ -40,7 +40,7 @@ const apiSettings = {
   authenticate: async (
     requestToken: string,
     username: string,
-    password: string) => {
+    password: string): Promise<sessionIdResponse | undefined> => {
     const bodyData = {
       username,
       password,
@@ -67,7 +67,7 @@ const apiSettings = {
   rateMovie: async (
     sessionId: string,
     movieId: number,
-    value: object) => {
+    value: number) => {
     const endpoint = `${API_URL}movie/${movieId}/rating?api_key=${API_KEY}&session_id=${sessionId}`;
 
     const rating = await (
