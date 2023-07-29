@@ -7,6 +7,8 @@ import {
   LOGIN_URL,
   SESSION_ID_URL
 } from './config';
+// Types
+import type { Credits, Movie, Movies, sessionIdResponse } from './types/types';
 
 const defaultConfig = {
   method: 'POST',
@@ -16,18 +18,18 @@ const defaultConfig = {
 };
 
 const apiSettings = {
-  fetchMovies: async (searchTerm, page) => {
-    const endpoint = searchTerm
+  fetchMovies: async (searchTerm: string | null, page: number): Promise<Movies> => {
+    const endpoint: string = searchTerm
       ? `${SEARCH_BASE_URL}${searchTerm}&page=${page}`
       : `${POPULAR_BASE_URL}&page=${page}`;
     return await (await fetch(endpoint)).json();
   },
-  fetchMovie: async movieId => {
+  fetchMovie: async (movieId: string): Promise<Movie> => {
     const endpoint = `${API_URL}movie/${movieId}?api_key=${API_KEY}`;
     return await (await fetch(endpoint)).json();
   },
-  fetchCredits: async movieId => {
-    const creditsEndpoint = `${API_URL}movie/${movieId}/credits?api_key=${API_KEY}`;
+  fetchCredits: async (movieId: string): Promise<Credits> => {
+    const creditsEndpoint: string = `${API_URL}movie/${movieId}/credits?api_key=${API_KEY}`;
     return await (await fetch(creditsEndpoint)).json();
   },
   // Bonus material below for login
@@ -35,7 +37,10 @@ const apiSettings = {
     const reqToken = await (await fetch(REQUEST_TOKEN_URL)).json();
     return reqToken.request_token;
   },
-  authenticate: async (requestToken, username, password) => {
+  authenticate: async (
+    requestToken: string,
+    username: string,
+    password: string): Promise<sessionIdResponse | undefined> => {
     const bodyData = {
       username,
       password,
@@ -59,7 +64,10 @@ const apiSettings = {
       return sessionId;
     }
   },
-  rateMovie: async (sessionId, movieId, value) => {
+  rateMovie: async (
+    sessionId: string,
+    movieId: number,
+    value: number) => {
     const endpoint = `${API_URL}movie/${movieId}/rating?api_key=${API_KEY}&session_id=${sessionId}`;
 
     const rating = await (
