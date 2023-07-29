@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 // Image
 import searchIcon from '../../images/search-icon.svg';
 // Styles
 import { Wrapper, Content } from './SearchBar.styles';
+// Types
+import type { SearchBarProps } from '../../types/types';
 
-const SearchBar = ({ setSearchTerm }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ setSearchTerm }) => {
   const [state, setState] = useState('');
   const initial = useRef(true);
 

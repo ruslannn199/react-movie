@@ -1,8 +1,9 @@
-import React from 'react';
 // Styles
 import { Wrapper, Content, Text } from './HeroImage.styles';
+// Types
+import type { HeroImageProps } from '../../types/types';
 
-const HeroImage = ({ image, title, text }) => (
+const HeroImage: React.FC<HeroImageProps> = ({ image, title, text }) => (
   <Wrapper image={image}>
     <Content>
       <Text>

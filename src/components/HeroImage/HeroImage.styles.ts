@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<Record<'image', string>>`
   background: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0) 41%,
