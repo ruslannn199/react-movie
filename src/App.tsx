@@ -1,3 +1,4 @@
+import React from 'react';
 // Routing
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // Components
@@ -11,19 +12,21 @@ import { GlobalStyle } from './GlobalStyles';
 import Movie from './components/Movie';
 import NotFound from './components/NotFound';
 
-const App: React.FC = () => (
-  <Router>
-    <UserProvider>
-      <Header />
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/:movieId' element={<Movie />} />
-        <Route path='/*' element={<NotFound />} />
-      </Routes>
-      <GlobalStyle />
-    </UserProvider>
-  </Router>
-);
+const App: React.FC = () => {
+  return (
+    <Router>
+      <UserProvider>
+        <Header />
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/:movieId' element={<Movie />} />
+          <Route path='/*' element={<NotFound />} />
+        </Routes>
+        <GlobalStyle />
+      </UserProvider>
+    </Router>
+  );
+};
 
 export default App;

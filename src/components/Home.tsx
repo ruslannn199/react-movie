@@ -1,5 +1,4 @@
-// Config
-import { POSTER_SIZE, BACKDROP_SIZE, IMAGE_BASE_URL } from '../config';
+import React from 'react';
 // Components
 import HeroImage from './HeroImage';
 import Grid from './Grid';
@@ -26,23 +25,23 @@ const Home: React.FC = () => {
 
   return (
     <>
-      {state.results[0] ?
+      {state.docs[0] ?
         (<HeroImage
-          image={`${IMAGE_BASE_URL}${BACKDROP_SIZE}${state.results[0].backdrop_path}`}
-          title={state.results[0].original_title}
-          text={state.results[0].overview}
+          image={state.docs[0].poster.url || NoImage}
+          title={state.docs[0].name || state.docs[0].alternativeName || state.docs[0].enName}
+          text={state.docs[0].shortDescription || 'No description'}
         />)
         : null
       }
       <SearchBar setSearchTerm={setSearchTerm} />
       <Grid header={searchTerm ? 'Search Result' : 'Popular Movies'}>
-        {state.results.map((movie) => (
+        {state.docs.map((movie) => (
           <Thumb
             key={movie.id}
             clickable
             image={
-              movie.poster_path
-                ? IMAGE_BASE_URL + POSTER_SIZE + movie.poster_path
+              movie.poster.previewUrl
+                ? movie.poster.previewUrl
                 : NoImage
             }
             movieId={movie.id}
@@ -50,7 +49,7 @@ const Home: React.FC = () => {
         ))}
       </Grid>
       { loading && <Spinner />}
-      {state.page < state.total_pages && !loading && (
+      {state.page < state.pages && !loading && (
         <Button text='Load More' callback={() => setIsLoadingMore(true)} />
       )}
     </>

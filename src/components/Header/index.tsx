@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -9,8 +10,7 @@ import { Wrapper, Content, LogoImg, TMDBLogoImg } from './Header.styles';
 import { Context } from '../../context';
 
 const Header: React.FC = () => {
-  // @ts-ignore
-  const [user] = useContext(Context);
+  const { user } = useContext(Context);
   return (
     <Wrapper>
       <Content>
@@ -18,7 +18,7 @@ const Header: React.FC = () => {
           <LogoImg src={RMDBLogo} alt='rmdb-logo' />
         </Link>
         {user ? (
-            <span>Logged in as: {user.username}</span>
+            <span>Logged in as: {user.email}</span>
           ) : (
             <Link to='/login'>
               <span className='login'>Log in</span>

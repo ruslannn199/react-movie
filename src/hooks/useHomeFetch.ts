@@ -2,15 +2,15 @@ import { useState, useEffect } from 'react';
 // API
 import API from '../API';
 // Helpers
-import { isPersistedState } from '../helpers';
+import { isPersistedState } from '../utils/helpers';
 // Types
-import type { Movie } from '../types/types';
+import type { Movies } from '../types/types';
 
-const initialState = {
+const initialState: Movies = {
+  docs: [],
   page: 0,
-  results: [] as Movie[],
-  total_pages: 0,
-  total_results: 0,
+  pages: 0,
+  total: 0,
 }
 
 export const useHomeFetch = () => {
@@ -29,8 +29,7 @@ export const useHomeFetch = () => {
 
       setState((prev) => ({
         ...movies,
-        results:
-          page > 1 ? [...prev.results, ...movies.results] : [...movies.results],
+        items: page > 1 ? [...prev.docs, ...movies.docs] : [...movies.docs],
       }));
     } catch (err) {
       console.error(err);
@@ -40,10 +39,14 @@ export const useHomeFetch = () => {
     setLoading(false);
   }
 
+  useEffect(() => {
+    fetchMovies(1);
+  }, []);
+
   // Initial and search
   useEffect(() => {
     if (!searchTerm) {
-      const sessionState = isPersistedState('homeState');
+      const sessionState = isPersistedState<Movies>('homeState');
       if (sessionState) {
         setState(sessionState);
         return;

@@ -1,3 +1,4 @@
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import {
   SEARCH_BASE_URL,
   POPULAR_BASE_URL,
@@ -8,29 +9,44 @@ import {
   SESSION_ID_URL
 } from './config';
 // Types
-import type { Credits, Movie, Movies, sessionIdResponse } from './types/types';
+import type { ApiResponse, Movie, sessionIdResponse } from './types/types';
 
-const defaultConfig = {
-  method: 'POST',
+const defaultConfig: AxiosRequestConfig = {
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'X-API-KEY': API_KEY!,
   }
-};
+}
+
+const defaultSelectedKeys: (keyof Movie)[] = [
+  'id', 'alternativeName', 'budget', 'description', 'enName', 'fees', 'logo', 'movieLength',
+  'name', 'persons', 'poster', 'rating', 'releaseYears', 'shortDescription', 'year',
+]
 
 const apiSettings = {
-  fetchMovies: async (searchTerm: string | null, page: number): Promise<Movies> => {
-    const endpoint: string = searchTerm
-      ? `${SEARCH_BASE_URL}${searchTerm}&page=${page}`
-      : `${POPULAR_BASE_URL}&page=${page}`;
-    return await (await fetch(endpoint)).json();
+  fetchMovies: async (searchTerm: string | null, page: number): Promise<ApiResponse<Movie>> => {
+    const endpoint: string = searchTerm ? SEARCH_BASE_URL : POPULAR_BASE_URL;
+    const config: AxiosRequestConfig = {
+      ...defaultConfig,
+      params: {
+        selectedFields: defaultSelectedKeys,
+        limit: 20,
+        page,
+        ...(searchTerm ? { query: searchTerm } : {}),
+      }
+    }
+    return (await axios.get(endpoint, config)).data;
   },
-  fetchMovie: async (movieId: string): Promise<Movie> => {
-    const endpoint = `${API_URL}movie/${movieId}?api_key=${API_KEY}`;
-    return await (await fetch(endpoint)).json();
-  },
-  fetchCredits: async (movieId: string): Promise<Credits> => {
-    const creditsEndpoint: string = `${API_URL}movie/${movieId}/credits?api_key=${API_KEY}`;
-    return await (await fetch(creditsEndpoint)).json();
+  fetchMovie: async (movieId: number): Promise<Movie> => {
+    const endpoint = POPULAR_BASE_URL;
+    const config: AxiosRequestConfig = {
+      ...defaultConfig,
+      params: {
+        selectedFields: defaultSelectedKeys,
+        id: movieId,
+      }
+    }
+    return (await axios.get(endpoint, config)).data;
   },
   // Bonus material below for login
   getRequestToken: async () => {
@@ -47,21 +63,11 @@ const apiSettings = {
       request_token: requestToken
     };
     // First authenticate the requestToken
-    const data = await (
-      await fetch(LOGIN_URL, {
-        ...defaultConfig,
-        body: JSON.stringify(bodyData)
-      })
-    ).json();
+    const response: AxiosResponse<Record<'success', boolean>> = await axios.post(LOGIN_URL, bodyData, defaultConfig);
     // Then get the sessionId with the requestToken
-    if (data.success) {
-      const sessionId = await (
-        await fetch(SESSION_ID_URL, {
-          ...defaultConfig,
-          body: JSON.stringify({ request_token: requestToken })
-        })
-      ).json();
-      return sessionId;
+    if (response.data.success) {
+      const sessionId: AxiosResponse<sessionIdResponse> = await axios.post(SESSION_ID_URL, { request_token: requestToken }, defaultConfig);
+      return sessionId.data;
     }
   },
   rateMovie: async (
@@ -69,15 +75,9 @@ const apiSettings = {
     movieId: number,
     value: number) => {
     const endpoint = `${API_URL}movie/${movieId}/rating?api_key=${API_KEY}&session_id=${sessionId}`;
+    const rating = await axios.post(endpoint, { value }, defaultConfig);
 
-    const rating = await (
-      await fetch(endpoint, {
-        ...defaultConfig,
-        body: JSON.stringify({ value })
-      })
-    ).json();
-
-    return rating;
+    return rating.data;
   }
 };
 

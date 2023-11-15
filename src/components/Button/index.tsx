@@ -1,3 +1,4 @@
+import React from 'react';
 // Styles
 import { Wrapper } from './Button.styles';
 // Types

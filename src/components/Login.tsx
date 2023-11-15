@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../API';
 // Components
@@ -7,16 +7,23 @@ import Button from './Button';
 import { Wrapper } from './Login.styles';
 // Context
 import { Context } from '../context';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../utils/firebase.utils';
 
-const Login = () => {
+interface LoginFormFields {
+  name: string;
+  value: string;
+}
+
+const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
+  const { setUser } = useContext(Context);
 
-  const [_user, setUser] = useContext(Context);
   const navigate = useNavigate();
 
-  const handleInput = (e) => {
+  const handleInput = (e: React.SyntheticEvent<LoginFormFields>) => {
     const name = e.currentTarget.name;
     const value = e.currentTarget.value;
 
@@ -27,14 +34,11 @@ const Login = () => {
   const handleSubmit = async () => {
     setError(false);
     try {
-      const requestToken = await API.getRequestToken();
-      const sessionId = await API.authenticate(
-        requestToken, username, password
-      );
-      if (sessionId.success && sessionId.session_id) {
-        setUser({ sessionId: sessionId.session_id, username });
-        navigate('/');
+      const { user } = await signInWithEmailAndPassword(auth, username, password);
+      if (setUser) {
+        setUser(user);
       }
+      navigate('/');
     } catch (err) {
       setError(true);
     }

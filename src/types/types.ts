@@ -1,43 +1,61 @@
+import { User } from 'firebase/auth';
+
+export type Person = {
+  id: number | null,
+  photo: string | null,
+  name: string | null,
+  enName: string | null,
+  description: string,
+  profession: string,
+  enProfession: string
+}
+
+export type Rating = {
+  kp: number | null;
+  imdb: number | null;
+  tmdb: number | null;
+}
+
+export type Money = {
+  value: number | null;
+  currency: string | null;
+}
+
 export type Movie = {
-  backdrop_path: string;
   id: number;
-  original_title: string;
-  overview: string;
-  popularity: number;
-  poster_path: string;
-  title: string;
-  vote_average: number;
-  vote_count: number;
-  budget: number;
-  runtime: number;
-  revenue: number;
+  name: string;
+  alternativeName: string;
+  enName: string;
+  year: number;
+  description: string;
+  shortDescription: string;
+  rating: Rating;
+  movieLength: number;
+  logo: {
+    url: string | null;
+  }
+  poster: {
+    url: string | null;
+    previewUrl: string | null;
+  }
+  persons: Person[];
+  budget: Money;
+  fees: Record<string, Money>;
+  releaseYears: {
+    start: number | null;
+    end: number | null;
+  }
 }
 
-export type Movies = {
+export type ApiResponse<T> = {
+  docs: T[];
+  total: number;
+  limit: number;
   page: number;
-  results: Movie[];
-  total_pages: number;
-  total_results: number;
+  pages: number;
 }
 
-export type Cast = {
-  character: string;
-  credit_id: string;
-  name: string;
-  profile_path: string;
-}
-
-export type Crew = {
-  job: string;
-  name: string;
-  credit_id: number;
-}
-
-export type Credits = {
-  id: number;
-  cast: Cast[];
-  crew: Crew[];
-}
+export type Movies = Omit<ApiResponse<Movie>, 'limit'>;
 
 export type ButtonProps = {
   text: string;
@@ -46,7 +64,7 @@ export type ButtonProps = {
 
 export type GridProps = {
   header: string;
-  children: any;
+  children: React.ReactNode;
 }
 
 export type HeroImageProps = {
@@ -62,18 +80,13 @@ export type MovieInfoBarProps = {
 }
 
 export type SearchBarProps = {
-  'setSearchTerm': React.Dispatch<React.SetStateAction<string>>;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export type ThumbProps = {
   image: string;
   clickable: boolean;
   movieId?: number;
-}
-
-export type MovieState = Movie & {
-  actors: Cast[];
-  directors: Crew[];
 }
 
 export type ActorProps = {
@@ -91,4 +104,9 @@ export type successSession = {
   session_id: string;
   username: string;
   value?: number;
+}
+
+export type AuthContext = {
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }

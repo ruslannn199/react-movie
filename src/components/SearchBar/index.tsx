@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 // Image
 import searchIcon from '../../images/search-icon.svg';

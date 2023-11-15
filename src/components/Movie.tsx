@@ -1,6 +1,5 @@
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-// Config
-import { IMAGE_BASE_URL, POSTER_SIZE } from '../config';
 // Components
 import BreadCrumb from './BreadCrumb';
 import Grid from './Grid';
@@ -15,34 +14,49 @@ import NoImage from '../images/no_image.jpg';
 
 const Movie: React.FC = () => {
   const { movieId } = useParams();
+  const { state: movie, loading, error } = useMovieFetch(parseInt(movieId || '0', 10));
+  const [fee, setFee] = useState<number | null>(null);
 
-  const { state: movie, loading, error } = useMovieFetch(`${movieId}`);
+  useEffect(() => {
+    if (movie.fees.world && movie.fees.world.value) {
+      setFee(movie.fees.world.value)
+    }
+    if (movie.fees.russia && movie.fees.russia.value) {
+      setFee(movie.fees.russia.value)
+    }
+    if (movie.fees.usa && movie.fees.usa.value) {
+      setFee(movie.fees.usa.value)
+    }
+  }, []);
+
+  console.log(movie);
 
   if (loading) return <Spinner />;
   if (error) return <div>Something went wrong...</div>
+  
   return (
     <>
-      <BreadCrumb movieTitle={movie.original_title} />
+      <BreadCrumb movieTitle={movie.name || movie.alternativeName || movie.enName} />
       <MovieInfo movie={movie} />
       <MovieInfoBar
-        time={movie.runtime}
-        budget={movie.budget}
-        revenue={movie.revenue}
+        time={movie.movieLength}
+        budget={movie.budget.value || 0}
+        revenue={fee || 0}
       />
-      <Grid header='Actors'>
-        {movie.actors.map((actor) => (
+      {/* <Grid header='Actors'>
+        {movie.staff.map((actor) => (
           <Actor
-            key={actor.credit_id}
-            name={actor.name}
-            character={actor.character}
+            key={actor.staffId}
+            name={actor.nameRu || actor.nameEn || 'No name'}
+            character={actor.professionText}
             imageUrl={
-              actor.profile_path
-               ? `${IMAGE_BASE_URL}${POSTER_SIZE}${actor.profile_path}`
+              actor.posterUrl
+               ? actor.posterUrl
                : NoImage
             }
           />
         ))}
-      </Grid>
+      </Grid> */}
     </>
   );
 };

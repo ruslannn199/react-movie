@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 const Rate = ({callback}: Record<'callback', (value: number) => Promise<void>>) => {
   const [value, setValue] = useState(5);

@@ -1,5 +1,6 @@
+import React from 'react';
 // Helpers
-import { calcTime, convertMoney } from '../../helpers';
+import { calcTime, convertMoney } from '../../utils/helpers';
 // Styles
 import { Wrapper, Content } from './MovieInfoBar.styles';
 // Types
