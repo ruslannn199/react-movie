@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -18,10 +18,10 @@ const Header: React.FC = () => {
           <LogoImg src={RMDBLogo} alt='rmdb-logo' />
         </Link>
         {user ? (
-            <span>Logged in as: {user.email}</span>
+            <span>Вы вошли как: {user.email}</span>
           ) : (
             <Link to='/login'>
-              <span className='login'>Log in</span>
+              <span className='login'>Войти</span>
             </Link>
           )
         }

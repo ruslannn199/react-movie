@@ -11,7 +11,7 @@ const BreadCrumb: React.FC<BreadCrumbProps> = ({ movieTitle }) => (
   <Wrapper>
     <Content>
       <Link to={'/'}>
-        <span>Home</span>
+        <span>На главную</span>
       </Link>
       <span>|</span>
       <span>{movieTitle}</span>

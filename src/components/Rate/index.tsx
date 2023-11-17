@@ -19,7 +19,7 @@ const Rate = ({callback}: Record<'callback', (value: number) => Promise<void>>) 
       />
       {value}
       <p>
-        <button onClick={() => callback(value)}>Rate</button>
+        <button onClick={() => callback(value)}>Оценить</button>
       </p>
     </div>
   )
