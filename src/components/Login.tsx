@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import API from '../API';
 // Components
 import Button from './Button';
 // Styles
@@ -46,8 +45,8 @@ const Login: React.FC = () => {
 
   return (
     <Wrapper>
-      {error && <div className='error'>There was an error!</div>}
-      <label>Username:</label>
+      {error && <div className='error'>Возникла ошибка!</div>}
+      <label>Для входа используйте свой TMDB аккаунт</label>
       <input
         type='text'
         value={username}
@@ -60,7 +59,7 @@ const Login: React.FC = () => {
         name='password'
         onChange={handleInput}
       />
-      <Button text='Login' callback={handleSubmit} />
+      <Button text='Войти' $small callback={handleSubmit} />
     </Wrapper>
   )
 }
