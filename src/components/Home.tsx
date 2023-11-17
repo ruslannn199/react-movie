@@ -21,7 +21,7 @@ const Home: React.FC = () => {
     setIsLoadingMore
   } = useHomeFetch();
 
-  if (error) return <div>Something went wrong...</div>;
+  if (error) return <div>Что-то пошло не так...</div>;
 
   return (
     <>
@@ -29,18 +29,18 @@ const Home: React.FC = () => {
         (<HeroImage
           image={state.docs[0].poster.url || NoImage}
           title={state.docs[0].name || state.docs[0].alternativeName || state.docs[0].enName}
-          text={state.docs[0].shortDescription || 'No description'}
+          text={state.docs[0].shortDescription || 'Описание отсутствует'}
         />)
         : null
       }
       <SearchBar setSearchTerm={setSearchTerm} />
-      <Grid header={searchTerm ? 'Search Result' : 'Popular Movies'}>
+      <Grid header={searchTerm ? 'Результаты поиска' : 'Популярные фильмы'}>
         {state.docs.map((movie) => (
           <Thumb
             key={movie.id}
             clickable
             image={
-              movie.poster.previewUrl
+              movie.poster?.previewUrl
                 ? movie.poster.previewUrl
                 : NoImage
             }

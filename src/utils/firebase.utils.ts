@@ -1,6 +1,5 @@
 // Firebase
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
 import { doc, setDoc, getDoc, initializeFirestore, persistentLocalCache, CACHE_SIZE_UNLIMITED } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth';
 // Types
@@ -17,7 +16,6 @@ const firebaseConfig: FirebaseOptions = {
   measurementId: import.meta.env.VITE_APP_FIREBASE_MEASUREMENT_ID,
 }
 const app: FirebaseApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
 export const auth: Auth = getAuth();
 export const db: Firestore = initializeFirestore(app, {

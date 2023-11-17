@@ -1,51 +1,57 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 // API
 import API from '../API';
 // Helpers
 import { isPersistedState } from '../utils/helpers';
 // Types
-import type { Movie } from '../types/types';
+import type { Movie, MovieState } from '../types/types';
 
 export const useMovieFetch = (movieId: number) => {
-  const [state, setState] = useState<Movie>({} as Movie);
+  const [state, setState] = useState<MovieState>({
+    movie: null,
+    directors: [],
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  
-  const fetchMovie = useCallback(async () => {
+
+  const fetchMovie = async () => {
     try {
       setLoading(true);
       setError(false);
 
       const movie = await API.fetchMovie(movieId);
-
-      setState(movie);
+      const directors = movie.persons.filter((person) => (person.enProfession === 'director'));
+      setState((prev) => ({
+        ...prev,
+        movie,
+        directors,
+      }));
 
       setLoading(false);
     } catch (error) {
       setError(true);
     }
-  }, [movieId]);
-
-  useEffect(() => {
-    fetchMovie();
-    return () => (setState({} as Movie));
-  }, []);
+  }
 
   useEffect(() => {
     const sessionState = isPersistedState<Movie>(`${movieId}`);
 
     if (sessionState) {
-      setState(sessionState);
+      setState((prev) => ({
+        ...prev,
+        movie: sessionState,
+      }));
       setLoading(false);
       return;
     }
     fetchMovie();
-    return () => (setState({} as Movie));
-  }, [movieId, fetchMovie]);
+  }, [movieId]);
 
   // Write to sessionStorage
   useEffect(() => {
-    sessionStorage.setItem(`${movieId}`, JSON.stringify(state));
+    if (state.movie) {
+      sessionStorage.setItem(`${movieId}`, JSON.stringify(state.movie));
+    }
   }, [movieId, state])
 
   return { state, loading, error };

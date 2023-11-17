@@ -1,12 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 // Styles
 import { Image } from './Thumb.styles';
 // Types
 import type { ThumbProps } from '../../types/types';
+import { Link } from 'react-router-dom';
 
 const Thumb: React.FC<ThumbProps> = ({ image, movieId, clickable }) => (
-  <div>
+  <>
     {clickable ? (
       <Link to={`/${movieId}`}>
         <Image src={image} alt='movie-thumb' />
@@ -14,7 +14,7 @@ const Thumb: React.FC<ThumbProps> = ({ image, movieId, clickable }) => (
     ) : (
       <Image src={image} alt='movie-thumb' />
     )}
-  </div>
+  </>
 );
 
 export default Thumb;

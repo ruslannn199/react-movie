@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useState, createContext } from 'react';
-import { AuthContext, successSession } from './types/types';
+import { AuthContext } from './types/types';
 import { User } from 'firebase/auth';
 
 export const Context: React.Context<AuthContext> = createContext<AuthContext>({

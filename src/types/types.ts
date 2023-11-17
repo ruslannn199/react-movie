@@ -21,6 +21,12 @@ export type Money = {
   currency: string | null;
 }
 
+export type Fees = {
+  world: Money;
+  usa: Money;
+  russia: Money;
+}
+
 export type Movie = {
   id: number;
   name: string;
@@ -55,11 +61,17 @@ export type ApiResponse<T> = {
   pages: number;
 }
 
+export type MovieState = {
+  movie: Movie | null;
+  directors: Person[];
+}
+
 export type Movies = Omit<ApiResponse<Movie>, 'limit'>;
 
 export type ButtonProps = {
   text: string;
   callback: () => void;
+  $small?: boolean;
 }
 
 export type GridProps = {
@@ -93,17 +105,6 @@ export type ActorProps = {
   name: string;
   character: string;
   imageUrl: string;
-}
-
-export type sessionIdResponse = {
-  success: boolean;
-  session_id?: string;
-}
-
-export type successSession = {
-  session_id: string;
-  username: string;
-  value?: number;
 }
 
 export type AuthContext = {
