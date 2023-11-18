@@ -15,15 +15,14 @@ interface MovieInfoProps {
 
 const MovieInfo: React.FC<MovieInfoProps> = ({ movie, directors }) => {
   return (
-    <Wrapper $backdrop={movie.poster.url || NoImage}>
+    <Wrapper $backdrop={movie?.poster?.url || NoImage}>
       <Content>
         <Thumb
-          image={movie.poster.previewUrl ? movie.poster.previewUrl : NoImage}
-          clickable={false}
+          image={movie?.poster?.previewUrl ? movie.poster.previewUrl : NoImage}
         />
         <Text>
           <h1>{movie.name || movie.alternativeName || movie.enName}</h1>
-          <h3>PLOT</h3>
+          <h3>СЮЖЕТ</h3>
           <p>{movie.description}</p>
 
           <div className='rating-directors'>

@@ -11,22 +11,23 @@ import Actor from './Actor';
 import { useMovieFetch } from '../hooks/useMovieFetch';
 // Image
 import NoImage from '../images/no_image.jpg';
+import type { Money } from '../types/types';
 
 const Movie: React.FC = () => {
   const { movieId } = useParams();
-  const [fee, setFee] = useState<number | null>(null);
+  const [fee, setFee] = useState<Money>({ value: 0, currency: '$' });
   const { state: { movie, directors }, loading, error } = useMovieFetch(parseInt(movieId || '0', 10));
-  console.log('MOVIE', movie);
 
   useEffect(() => {
-    if (movie?.fees?.world?.value) {
-      setFee(movie.fees.world.value)
-    }
-    if (movie?.fees?.russia?.value) {
-      setFee(movie.fees.russia.value)
-    }
-    if (movie?.fees?.usa?.value) {
-      setFee(movie.fees.usa.value)
+    if (movie && movie.fees) {
+      const { world, russia, usa } = movie.fees;
+      if (world && world.value && world.currency) {
+        setFee({...world});
+      } else if (russia && russia.value && russia.currency) {
+        setFee({...russia});
+      } else if (usa && usa.value && usa.currency) {
+        setFee({...usa});
+      }
     }
   }, [movie]);
 
@@ -41,8 +42,8 @@ const Movie: React.FC = () => {
           <MovieInfo movie={movie} directors={directors} />
           <MovieInfoBar
             time={movie.movieLength}
-            budget={movie.budget?.value || 0}
-            revenue={fee || 0}
+            budget={movie.budget}
+            revenue={fee}
           />
           <Grid header='Actors'>
             {movie.persons.map((actor) => (

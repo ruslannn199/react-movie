@@ -9,7 +9,7 @@ const Thumb: React.FC<ThumbProps> = ({ image, movieId, clickable }) => (
   <>
     {clickable ? (
       <Link to={`/${movieId}`}>
-        <Image src={image} alt='movie-thumb' />
+        <Image src={image} alt='movie-thumb' $collapsed />
       </Link>
     ) : (
       <Image src={image} alt='movie-thumb' />

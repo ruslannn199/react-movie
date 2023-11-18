@@ -87,8 +87,8 @@ export type HeroImageProps = {
 
 export type MovieInfoBarProps = {
   time: number;
-  budget: number;
-  revenue: number;
+  budget: Money;
+  revenue: Money;
 }
 
 export type SearchBarProps = {
@@ -97,7 +97,7 @@ export type SearchBarProps = {
 
 export type ThumbProps = {
   image: string;
-  clickable: boolean;
+  clickable?: boolean;
   movieId?: number;
 }
 
@@ -110,4 +110,9 @@ export type ActorProps = {
 export type AuthContext = {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+}
+
+export type CurrencyFormat = {
+  language: string;
+  ISO: string;
 }

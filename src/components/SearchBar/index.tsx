@@ -30,7 +30,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ setSearchTerm }) => {
         <img src={searchIcon} alt='search-icon' />
         <input
           type='text'
-          placeholder='Search Movie'
+          placeholder='Поиск фильма'
           onChange={event => setState(event.currentTarget.value)}
           value={state}
         />

@@ -28,7 +28,7 @@ const apiSettings = {
         selectFields: defaultSelectedKeys,
         limit: 20,
         page,
-        ...(searchTerm ? { query: searchTerm } : {}),
+        ...(searchTerm ? { query: searchTerm } : { ticketsOnSale: true }),
       }
     }
     return (await axios.get(endpoint, config)).data;

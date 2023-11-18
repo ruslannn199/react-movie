@@ -6,8 +6,7 @@ import { Wrapper, Content } from './MovieInfoBar.styles';
 // Types
 import type { MovieInfoBarProps } from '../../types/types';
 
-const MovieInfoBar: React.FC<MovieInfoBarProps> =
-  ({ time, budget, revenue }) => (
+const MovieInfoBar: React.FC<MovieInfoBarProps> = ({ time, budget, revenue }) => (
   <Wrapper>
     <Content>
       <div className='column'>

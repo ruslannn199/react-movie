@@ -20,7 +20,7 @@ export const useMovieFetch = (movieId: number) => {
       setError(false);
 
       const movie = await API.fetchMovie(movieId);
-      const directors = movie.persons.filter((person) => (person.enProfession === 'director'));
+      const directors = movie.persons.filter((person) => (person.enProfession === 'director' || person.profession === 'режиссеры'));
       setState((prev) => ({
         ...prev,
         movie,
