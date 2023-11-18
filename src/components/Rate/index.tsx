@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 const Rate = ({callback}: Record<'callback', (value: number) => Promise<void>>) => {
   const [value, setValue] = useState(5);
@@ -18,7 +19,7 @@ const Rate = ({callback}: Record<'callback', (value: number) => Promise<void>>) 
       />
       {value}
       <p>
-        <button onClick={() => callback(value)}>Rate</button>
+        <button onClick={() => callback(value)}>Оценить</button>
       </p>
     </div>
   )

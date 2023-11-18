@@ -1,62 +1,42 @@
-import { useContext } from 'react';
-import API from '../../API';
+import React from 'react';
 // Components
 import Thumb from '../Thumb';
-import Rate from '../Rate';
-// Config
-import { IMAGE_BASE_URL, POSTER_SIZE } from '../../config';
 // Image
 import NoImage from '../../images/no_image.jpg';
 // Styles
 import { Wrapper, Content, Text } from './MovieInfo.styles';
 // Types
-import type { MovieState } from '../../types/types';
-// Context
-import { Context } from '../../context';
+import type { Movie, Person } from '../../types/types';
 
-const MovieInfo: React.FC<Record<'movie', MovieState>> = ({ movie }) => {
-  // @ts-ignore
-  const [user] = useContext(Context);
+interface MovieInfoProps {
+  movie: Movie;
+  directors: Person[];
+}
 
-  const handleRating = async (value: number) => {
-    const rate = await API.rateMovie(
-      user.sessionId, movie.id, value
-    );
-  }
-  
+const MovieInfo: React.FC<MovieInfoProps> = ({ movie, directors }) => {
   return (
-    <Wrapper backdrop={movie.backdrop_path}>
+    <Wrapper $backdrop={movie?.poster?.url || NoImage}>
       <Content>
         <Thumb
-          image={
-            movie.poster_path
-            ? `${IMAGE_BASE_URL}${POSTER_SIZE}${movie.poster_path}`
-            : NoImage
-          }
-          clickable={false}
+          image={movie?.poster?.previewUrl ? movie.poster.previewUrl : NoImage}
         />
         <Text>
-          <h1>{movie.title}</h1>
-          <h3>PLOT</h3>
-          <p>{movie.overview}</p>
+          <h1>{movie.name || movie.alternativeName || movie.enName}</h1>
+          <h3>СЮЖЕТ</h3>
+          <p>{movie.description}</p>
 
           <div className='rating-directors'>
             <div>
-              <h3>RATING</h3>
-              <div className='score'>{movie.vote_average}</div>
+              <h3>РЕЙТИНГ</h3>
+              <div className='score'>{movie.rating.kp || movie.rating.imdb || movie.rating.tmdb}</div>
             </div>
             <div className='director'>
-              <h3>DIRECTOR{movie.directors.length > 1 ? 'S' : ''}</h3>
-              {movie.directors.map((director) => (
-                <p key={director.credit_id}>{director.name}</p>
+              <h3>РЕЖИССЁР{directors.length > 1 ? 'Ы' : ''}</h3>
+              {directors.map((director) => (
+                <p key={director.id}>{director.name || director.enName || 'Имя отсутствует'}</p>
               ))}
             </div>
           </div>
-          {user && (<div>
-                      <p>Rate Movie</p>
-                      <Rate callback={handleRating}/>
-                    </div>)
-          }
         </Text>
       </Content>
     </Wrapper>

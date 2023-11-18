@@ -1,6 +1,5 @@
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-// Config
-import { IMAGE_BASE_URL, POSTER_SIZE } from '../config';
 // Components
 import BreadCrumb from './BreadCrumb';
 import Grid from './Grid';
@@ -12,38 +11,53 @@ import Actor from './Actor';
 import { useMovieFetch } from '../hooks/useMovieFetch';
 // Image
 import NoImage from '../images/no_image.jpg';
+import type { Money } from '../types/types';
 
 const Movie: React.FC = () => {
   const { movieId } = useParams();
+  const [fee, setFee] = useState<Money>({ value: 0, currency: '$' });
+  const { state: { movie, directors }, loading, error } = useMovieFetch(parseInt(movieId || '0', 10));
 
-  const { state: movie, loading, error } = useMovieFetch(`${movieId}`);
+  useEffect(() => {
+    if (movie && movie.fees) {
+      const { world, russia, usa } = movie.fees;
+      if (world && world.value && world.currency) {
+        setFee({...world});
+      } else if (russia && russia.value && russia.currency) {
+        setFee({...russia});
+      } else if (usa && usa.value && usa.currency) {
+        setFee({...usa});
+      }
+    }
+  }, [movie]);
 
   if (loading) return <Spinner />;
-  if (error) return <div>Something went wrong...</div>
+  if (error) return <div>Что-то пошло не так...</div>
+  
   return (
-    <>
-      <BreadCrumb movieTitle={movie.original_title} />
-      <MovieInfo movie={movie} />
-      <MovieInfoBar
-        time={movie.runtime}
-        budget={movie.budget}
-        revenue={movie.revenue}
-      />
-      <Grid header='Actors'>
-        {movie.actors.map((actor) => (
-          <Actor
-            key={actor.credit_id}
-            name={actor.name}
-            character={actor.character}
-            imageUrl={
-              actor.profile_path
-               ? `${IMAGE_BASE_URL}${POSTER_SIZE}${actor.profile_path}`
-               : NoImage
-            }
+    movie
+      ? (
+        <>
+          <BreadCrumb movieTitle={movie.name || movie.alternativeName || movie.enName} />
+          <MovieInfo movie={movie} directors={directors} />
+          <MovieInfoBar
+            time={movie.movieLength}
+            budget={movie.budget}
+            revenue={fee}
           />
-        ))}
-      </Grid>
-    </>
+          <Grid header='Actors'>
+            {movie.persons.map((actor) => (
+              <Actor
+                key={`${actor.id}-${actor.enProfession}`}
+                name={actor.name || actor.enName || 'Имя отсутствует'}
+                character={actor.profession}
+                imageUrl={actor.photo ? actor.photo : NoImage }
+              />
+            ))}
+          </Grid>
+        </>
+      )
+      : null
   );
 };
 

@@ -1,84 +1,48 @@
+import axios, { AxiosRequestConfig } from 'axios';
 import {
   SEARCH_BASE_URL,
   POPULAR_BASE_URL,
-  API_URL,
   API_KEY,
-  REQUEST_TOKEN_URL,
-  LOGIN_URL,
-  SESSION_ID_URL
 } from './config';
 // Types
-import type { Credits, Movie, Movies, sessionIdResponse } from './types/types';
+import type { ApiResponse, Movie } from './types/types';
 
-const defaultConfig = {
-  method: 'POST',
+const defaultConfig: AxiosRequestConfig = {
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'X-API-KEY': API_KEY!,
   }
-};
+}
+
+const defaultSelectedKeys: (keyof Movie)[] = [
+  'id', 'alternativeName', 'budget', 'description', 'enName', 'fees', 'logo', 'movieLength',
+  'name', 'persons', 'poster', 'rating', 'releaseYears', 'shortDescription', 'year',
+]
 
 const apiSettings = {
-  fetchMovies: async (searchTerm: string | null, page: number): Promise<Movies> => {
-    const endpoint: string = searchTerm
-      ? `${SEARCH_BASE_URL}${searchTerm}&page=${page}`
-      : `${POPULAR_BASE_URL}&page=${page}`;
-    return await (await fetch(endpoint)).json();
-  },
-  fetchMovie: async (movieId: string): Promise<Movie> => {
-    const endpoint = `${API_URL}movie/${movieId}?api_key=${API_KEY}`;
-    return await (await fetch(endpoint)).json();
-  },
-  fetchCredits: async (movieId: string): Promise<Credits> => {
-    const creditsEndpoint: string = `${API_URL}movie/${movieId}/credits?api_key=${API_KEY}`;
-    return await (await fetch(creditsEndpoint)).json();
-  },
-  // Bonus material below for login
-  getRequestToken: async () => {
-    const reqToken = await (await fetch(REQUEST_TOKEN_URL)).json();
-    return reqToken.request_token;
-  },
-  authenticate: async (
-    requestToken: string,
-    username: string,
-    password: string): Promise<sessionIdResponse | undefined> => {
-    const bodyData = {
-      username,
-      password,
-      request_token: requestToken
-    };
-    // First authenticate the requestToken
-    const data = await (
-      await fetch(LOGIN_URL, {
-        ...defaultConfig,
-        body: JSON.stringify(bodyData)
-      })
-    ).json();
-    // Then get the sessionId with the requestToken
-    if (data.success) {
-      const sessionId = await (
-        await fetch(SESSION_ID_URL, {
-          ...defaultConfig,
-          body: JSON.stringify({ request_token: requestToken })
-        })
-      ).json();
-      return sessionId;
+  fetchMovies: async (searchTerm: string | null, page: number): Promise<ApiResponse<Movie>> => {
+    const endpoint: string = searchTerm ? SEARCH_BASE_URL : POPULAR_BASE_URL;
+    const config: AxiosRequestConfig = {
+      ...defaultConfig,
+      params: {
+        selectFields: defaultSelectedKeys,
+        limit: 20,
+        page,
+        ...(searchTerm ? { query: searchTerm } : { ticketsOnSale: true }),
+      }
     }
+    return (await axios.get(endpoint, config)).data;
   },
-  rateMovie: async (
-    sessionId: string,
-    movieId: number,
-    value: number) => {
-    const endpoint = `${API_URL}movie/${movieId}/rating?api_key=${API_KEY}&session_id=${sessionId}`;
-
-    const rating = await (
-      await fetch(endpoint, {
-        ...defaultConfig,
-        body: JSON.stringify({ value })
-      })
-    ).json();
-
-    return rating;
-  }
+  fetchMovie: async (movieId: number): Promise<Movie> => {
+    const endpoint = `${POPULAR_BASE_URL}/${movieId}`;
+    const config: AxiosRequestConfig = {
+      ...defaultConfig,
+      params: {
+        selectFields: defaultSelectedKeys,
+      }
+    }
+    return (await axios.get(endpoint, config)).data;
+  },
 };
 
 export default apiSettings;

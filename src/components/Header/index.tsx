@@ -1,16 +1,15 @@
+import React from 'react';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import RMDBLogo from '../../images/react-movie-logo.svg';
-import TMDBLogo from '../../images/tmdb_logo.svg';
 
-import { Wrapper, Content, LogoImg, TMDBLogoImg } from './Header.styles';
+import { Wrapper, Content, LogoImg } from './Header.styles';
 // Context
 import { Context } from '../../context';
 
 const Header: React.FC = () => {
-  // @ts-ignore
-  const [user] = useContext(Context);
+  const { user } = useContext(Context);
   return (
     <Wrapper>
       <Content>
@@ -18,14 +17,13 @@ const Header: React.FC = () => {
           <LogoImg src={RMDBLogo} alt='rmdb-logo' />
         </Link>
         {user ? (
-            <span>Logged in as: {user.username}</span>
+            <span>Вы вошли как: {user.email}</span>
           ) : (
             <Link to='/login'>
-              <span className='login'>Log in</span>
+              <span className='login'>Войти</span>
             </Link>
           )
         }
-        <TMDBLogoImg src={TMDBLogo} alt='tmdb-logo' />
       </Content>
     </Wrapper>
   );

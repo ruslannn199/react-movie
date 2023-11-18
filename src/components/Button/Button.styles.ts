@@ -1,17 +1,21 @@
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
+interface WrapperProps {
+  $small?: boolean;
+}
+
+export const Wrapper = styled.div<WrapperProps>`
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--darkGrey);
   width: 25%;
-  min-width: 200px;
-  height: 60px;
+  min-width: ${({ $small }) => ($small ? '150px' : '200px')};
+  height: ${({ $small }) => ($small ? '45px' : '60px')};
   border-radius: 30px;
   color: #fff;
   border: none;
-  font-size: var(--fontBig);
+  font-size: ${({ $small }) => ($small ? 'var(--fontSmall)' : 'var(--fontBig)')};
   margin: 20px auto;
   transition: all .3s;
   outline: none;

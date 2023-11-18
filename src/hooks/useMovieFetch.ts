@@ -1,54 +1,57 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 // API
 import API from '../API';
 // Helpers
-import { isPersistedState } from '../helpers';
+import { isPersistedState } from '../utils/helpers';
 // Types
-import type { MovieState } from '../types/types';
+import type { Movie, MovieState } from '../types/types';
 
-export const useMovieFetch = (movieId: string) => {
-  const [state, setState] = useState<MovieState>({} as MovieState);
+export const useMovieFetch = (movieId: number) => {
+  const [state, setState] = useState<MovieState>({
+    movie: null,
+    directors: [],
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  
-  const fetchMovie = useCallback(async () => {
+
+  const fetchMovie = async () => {
     try {
       setLoading(true);
       setError(false);
 
       const movie = await API.fetchMovie(movieId);
-      const credits = await API.fetchCredits(movieId);
-
-      // Get directors only
-      const directors = credits.crew
-        .filter((member) => member.job === 'Director');
-
-      setState({
-        ...movie,
-        actors: credits.cast,
+      const directors = movie.persons.filter((person) => (person.enProfession === 'director' || person.profession === 'режиссеры'));
+      setState((prev) => ({
+        ...prev,
+        movie,
         directors,
-      });
+      }));
 
       setLoading(false);
     } catch (error) {
       setError(true);
     }
-  }, [movieId]);
+  }
 
   useEffect(() => {
-    const sessionState = isPersistedState(movieId);
+    const sessionState = isPersistedState<Movie>(`${movieId}`);
 
     if (sessionState) {
-      setState(sessionState);
+      setState((prev) => ({
+        ...prev,
+        movie: sessionState,
+      }));
       setLoading(false);
       return;
     }
     fetchMovie();
-  }, [movieId, fetchMovie]);
+  }, [movieId]);
 
   // Write to sessionStorage
   useEffect(() => {
-    sessionStorage.setItem(movieId, JSON.stringify(state));
+    if (state.movie) {
+      sessionStorage.setItem(`${movieId}`, JSON.stringify(state.movie));
+    }
   }, [movieId, state])
 
   return { state, loading, error };
